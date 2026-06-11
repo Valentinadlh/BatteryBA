@@ -7,15 +7,17 @@ PDF invoice (with VAT) for your order.
 Built with **React 18 + Vite** as a front-end project to practice component architecture,
 custom hooks and client-side state management.
 
-> **Live demo:** _add your deployment URL here_ (see [Deployment](#deployment))
+> **Live demo:** <https://batteryba.netlify.app/>
 
 ## Screenshots
 
-> Add real screenshots to `docs/` and reference them here.
+**Product catalog**
 
-| Catalog | Cart & invoice |
-| ------- | -------------- |
-| `docs/screenshot-catalog.png` | `docs/screenshot-cart.png` |
+![Product catalog](docs/catalogo.png)
+
+**Cart with items and invoice actions**
+
+![Shopping cart and invoice](docs/shop.png)
 
 ## Features
 
@@ -31,6 +33,7 @@ custom hooks and client-side state management.
 - [Vite 6](https://vitejs.dev/) (with `@vitejs/plugin-react-swc`)
 - [jsPDF](https://github.com/parallax/jsPDF) + [jspdf-autotable](https://github.com/simonbengtsson/jsPDF-AutoTable)
 - [react-toastify](https://fkhadra.github.io/react-toastify/)
+- [Vitest](https://vitest.dev/) + [React Testing Library](https://testing-library.com/) for testing
 - [ESLint 9](https://eslint.org/)
 - Bootstrap-derived utility classes (vendored in `src/index.css`)
 
@@ -39,16 +42,20 @@ custom hooks and client-side state management.
 ```
 src/
 ├── components/
-│   ├── Battery.jsx     # Single product card
-│   └── Header.jsx      # Header + cart dropdown + PDF invoice
+│   ├── Battery.jsx          # Single product card
+│   ├── Battery.test.jsx     # Component test
+│   └── Header.jsx           # Header + cart dropdown + PDF invoice
 ├── data/
-│   └── db.js           # In-memory product catalog
+│   └── db.js                # In-memory product catalog
 ├── hooks/
-│   └── useCart.js      # Cart logic (add/remove/quantity, localStorage)
-├── App.jsx             # Composition root
-├── main.jsx            # React entry point
-└── index.css           # Styles
-public/img/             # Product and UI images
+│   ├── useCart.js           # Cart logic (add/remove/quantity, localStorage)
+│   └── useCart.test.js      # Hook unit tests
+├── test/
+│   └── setup.js             # Vitest setup (jest-dom, mocks)
+├── App.jsx                  # Composition root
+├── main.jsx                 # React entry point
+└── index.css                # Styles
+public/img/                  # Product and UI images
 ```
 
 ## Getting started
@@ -69,10 +76,28 @@ Then open the URL printed in the terminal (Vite defaults to <http://localhost:51
 
 | Script            | Description                          |
 | ----------------- | ------------------------------------ |
-| `npm run dev`     | Start the Vite dev server            |
-| `npm run build`   | Build for production into `dist/`    |
-| `npm run preview` | Preview the production build locally |
-| `npm run lint`    | Run ESLint                           |
+| `npm run dev`           | Start the Vite dev server              |
+| `npm run build`         | Build for production into `dist/`      |
+| `npm run preview`       | Preview the production build locally   |
+| `npm run lint`          | Run ESLint                             |
+| `npm test`              | Run the test suite once                |
+| `npm run test:watch`    | Run tests in watch mode                |
+| `npm run test:coverage` | Run tests with a coverage report       |
+
+## Testing
+
+Tests are written with [Vitest](https://vitest.dev/) and
+[React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+(jsdom environment).
+
+```bash
+npm test
+```
+
+Coverage focuses on the cart logic, which is the heart of the app:
+
+- `src/hooks/useCart.test.js` — add, increment, remove, quantity bounds, "empty cart", `localStorage` persistence and rehydration, and a regression test ensuring the catalog objects are never mutated. The `useCart` hook sits at **~97% coverage**.
+- `src/components/Battery.test.jsx` — rendering, accessible image alt text, and that clicking "Agregar al Carrito" calls `addToCart` with the right payload.
 
 ## Deployment
 
@@ -93,9 +118,8 @@ After deploying, paste the URL into the **Live demo** link at the top of this fi
 
 ## Possible improvements
 
-Ideas to take this further: product search/filtering, real backend + checkout, unit
-tests (Vitest + React Testing Library), and a "stock" / "already in cart" indicator on
-each product card.
+Ideas to take this further: product search/filtering, a real backend + checkout, and a
+"stock" / "already in cart" indicator on each product card.
 
 ## License
 
